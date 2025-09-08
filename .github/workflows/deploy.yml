@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  # mainブランチにプッシュされた時に実行
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    # 実行環境
+    runs-on: ubuntu-latest
+
+    # ジョブに与える権限
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      # 1. ソースコードをチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node.jsの環境をセットアップ
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. 依存関係をインストール
+      - name: Install dependencies
+        run: npm install
+
+      # 4. アプリをビルド
+      - name: Build
+        run: npm run build
+
+      # 5. GitHub Pages用の設定
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # 6. ビルド成果物(distディレクトリ)をアップロード
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      # 7. GitHub Pagesにデプロイ
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
