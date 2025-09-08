@@ -26,7 +26,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
 
       # 3. 依存関係を強制的にインストール
       - name: Install dependencies with legacy peer deps
