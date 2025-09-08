@@ -31,21 +31,32 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. アプリをビルド
-      - name: Build
+      # 4. アプリをビルドし、ログをファイルに保存
+      - name: Build and capture log
+        run: npm run build > build_log.txt 2>&1 || true
+
+      # 5. ビルドログをアーティファクトとしてアップロード
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-log
+          path: build_log.txt
+
+      # 6. アプリをビルド (エラーがない場合のみ)
+      - name: Build for deployment
         run: npm run build
 
-      # 5. GitHub Pages用の設定
+      # 7. GitHub Pages用の設定
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      # 6. ビルド成果物(distディレクトリ)をアップロード
+      # 8. ビルド成果物(distディレクトリ)をアップロード
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './dist'
 
-      # 7. GitHub Pagesにデプロイ
+      # 9. GitHub Pagesにデプロイ
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
